@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="uz" class="welcome-pending">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#F6F0E5">
+    <title>Million Istig‘for</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/welcome.css">
+    <link rel="stylesheet" href="/static/css/profile.css">
+</head>
+<body>
+    <div class="shell shell--welcome" id="welcome-shell">
+        <div class="welcome" id="welcome" aria-labelledby="welcome-headline">
+            <p class="welcome-brand">Million Istig‘for</p>
+
+            <section class="welcome-hero" aria-label="Million Istig‘for maqsadi">
+                <img
+                    class="welcome-hero-arch"
+                    src="/static/images/welcome/arch-frame.svg"
+                    alt=""
+                    width="380"
+                    height="320"
+                    decoding="async"
+                >
+                <img
+                    class="welcome-lantern welcome-lantern--left"
+                    src="/static/images/welcome/lantern-left.svg"
+                    alt=""
+                    width="40"
+                    height="68"
+                    decoding="async"
+                >
+                <img
+                    class="welcome-lantern welcome-lantern--right"
+                    src="/static/images/welcome/lantern-right.svg"
+                    alt=""
+                    width="40"
+                    height="68"
+                    decoding="async"
+                >
+
+                <div class="welcome-hero-badge-wrap">
+                    <img
+                        class="welcome-hero-badge-img"
+                        src="/static/images/welcome/hero-badge.svg"
+                        alt=""
+                        width="280"
+                        height="160"
+                        decoding="async"
+                    >
+                    <div class="welcome-hero-badge-text">
+                        <span class="welcome-hero-goal">1&nbsp;000&nbsp;000</span>
+                        <span class="welcome-hero-tag">ISTIG‘FOR</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="welcome-inner">
+                <h1 class="welcome-headline" id="welcome-headline">1&nbsp;000&nbsp;000 istig‘for.</h1>
+
+                <p class="welcome-headline-sub">
+                    Bir kishi uchun juda katta.<br>
+                    Birgalikda esa uddalash mumkin.
+                </p>
+
+                <p class="welcome-body">
+                    Har kuni Instagram, YouTube va boshqa kontentlarga sezmay qancha vaqtimiz ketadi.<br><br>
+                    Shu vaqtning atigi bir necha daqiqasini foydali amalga ajratsak-chi?
+                </p>
+
+                <div class="welcome-mission-card">
+                    <span class="welcome-mission-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="8" cy="9" r="2.5" stroke="#246B5B" stroke-width="1.2"/>
+                            <circle cx="16" cy="9" r="2.5" stroke="#246B5B" stroke-width="1.2"/>
+                            <circle cx="12" cy="6" r="2.2" stroke="#246B5B" stroke-width="1.2"/>
+                            <path d="M4 19c0-3 3.5-5 8-5s8 2 8 5" stroke="#246B5B" stroke-width="1.2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <p class="welcome-mission-text">
+                        Siz aytgan har bir istig‘for umumiy
+                        <strong class="welcome-mission-em">1&nbsp;000&nbsp;000</strong>
+                        maqsadiga qo‘shiladi.
+                    </p>
+                </div>
+
+                <div class="welcome-closing">
+                    <span class="welcome-closing-divider" aria-hidden="true"></span>
+                    <p class="welcome-motivation">
+                        <span class="welcome-motivation-muted">Bir necha daqiqa.</span>
+                        <span class="welcome-motivation-muted">Bir kichik hissa.</span>
+                        <span class="welcome-motivation-strong">Bitta katta umumiy maqsad.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="welcome-footer">
+                <button type="button" class="welcome-cta" id="welcome-cta">
+                    <span class="welcome-cta-label">Men ham qo‘shilaman</span>
+                    <span class="welcome-cta-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="shell shell--profile" id="profile-shell">
+        <div class="profile" aria-labelledby="profile-title">
+            <div class="profile-card">
+                <h1 class="profile-title" id="profile-title">Siz bilan tanishib olaylik</h1>
+                <p class="profile-subtitle">
+                    Natijangizni saqlashimiz va hissangizni sizga bog‘lashimiz uchun qisqacha ma’lumot kiriting.
+                </p>
+
+                <div class="profile-form-panel">
+                    <p id="profile-form-error" class="profile-form-error" hidden></p>
+                    <form id="profile-form" novalidate>
+                        <div class="profile-field">
+                            <label class="profile-label" for="profile-name">Ismingiz</label>
+                            <input
+                                type="text"
+                                id="profile-name"
+                                class="profile-input"
+                                name="display_name"
+                                autocomplete="given-name"
+                                maxlength="50"
+                                placeholder="Masalan: Akbarali"
+                            >
+                            <p id="profile-name-error" class="profile-field-error" hidden></p>
+                        </div>
+                        <div class="profile-field">
+                            <label class="profile-label" for="profile-age">Yoshingiz</label>
+                            <input
+                                type="number"
+                                id="profile-age"
+                                class="profile-input"
+                                name="age"
+                                inputmode="numeric"
+                                min="10"
+                                max="100"
+                                placeholder="Masalan: 32"
+                            >
+                            <p id="profile-age-error" class="profile-field-error" hidden></p>
+                        </div>
+                        <button type="submit" class="profile-submit" id="profile-submit">Davom etish</button>
+                    </form>
+                    <p class="profile-helper">
+                        Bu ma’lumotlar faqat sizning profilingiz va natijalaringiz uchun ishlatiladi.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="shell shell--tasbeh">
+        <div id="app" class="app">
+            <header class="header">
+                <h1 class="title">Million Istig‘for</h1>
+                <p class="tagline">Bir million istig‘forni birgalikda yakunlaymiz.</p>
+            </header>
+
+            <section class="card card-global" aria-label="Global mission">
+                <div class="global-count-display">
+                    <span id="global-dhikr" class="global-count-hero">0</span>
+                    <span class="global-count-sub">
+                        / <span id="global-dhikr-goal">1&nbsp;000&nbsp;000</span> istig‘for
+                    </span>
+                </div>
+                <div class="global-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="global-bar-fill" id="global-dhikr-bar"></div>
+                </div>
+                <div class="global-meta-row">
+                    <p class="global-remaining-line">
+                        Qoldi: <span id="global-remaining-dhikr">1&nbsp;000&nbsp;000</span>
+                    </p>
+                    <p class="global-percent-line"><span id="global-dhikr-percent">0%</span></p>
+                </div>
+            </section>
+
+            <section class="card card-return" id="return-card" hidden aria-live="polite">
+                <p class="return-greeting" id="return-greeting"></p>
+                <p class="return-subline" id="return-subline"></p>
+                <p class="return-growth" id="return-global-growth" hidden></p>
+            </section>
+
+            <main class="main">
+                <div class="mode-switch" role="tablist" aria-label="Usul">
+                    <button type="button" id="mode-tap" class="mode-btn active" data-mode="tap" role="tab" aria-selected="true">Bosish</button>
+                    <button type="button" id="mode-swipe" class="mode-btn" data-mode="swipe" role="tab" aria-selected="false">Surish</button>
+                </div>
+
+                <div id="tasbeh-surface" class="tasbeh-surface" aria-label="Tasbeh">
+                    <div class="tasbeh-ring">
+                        <button type="button" id="tasbeh-btn" class="tasbeh-btn">
+                            <span class="tasbeh-ripple" aria-hidden="true"></span>
+                            <span class="tasbeh-text">Astag‘firulloh</span>
+                            <span class="tasbeh-hint" id="tasbeh-hint">Bosish orqali zikr qiling</span>
+                        </button>
+                    </div>
+
+                    <div class="session-inline">
+                        <p class="session-count-label">Joriy sessiya</p>
+                        <p class="session-count" id="session-count">0</p>
+                        <p class="session-time-line">
+                            Joriy sessiya vaqti: <span id="session-active-time">0 soniya</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="idle-summary" id="idle-summary" hidden>
+                    <p class="idle-summary-line" id="idle-summary-dhikr"></p>
+                    <p class="idle-summary-line" id="idle-summary-time"></p>
+                    <button type="button" class="idle-continue-btn" id="idle-continue-btn">Davom etish</button>
+                </div>
+            </main>
+
+            <section class="card card-today" aria-label="Bugungi hissam">
+                <h2 class="card-title">Bugungi hissam</h2>
+                <div class="metric-row">
+                    <div class="metric">
+                        <span class="metric-label">Istig‘for</span>
+                        <span class="metric-value" id="today-dhikr">0</span>
+                    </div>
+                    <div class="metric-divider" aria-hidden="true"></div>
+                    <div class="metric">
+                        <span class="metric-label">Faol vaqt</span>
+                        <span class="metric-value metric-value-sm" id="today-time">0 soniya</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card card-personal" aria-label="Jami hissam">
+                <h2 class="card-title">Jami hissam</h2>
+                <div class="metric-row">
+                    <div class="metric">
+                        <span class="metric-label">Istig‘for</span>
+                        <span class="metric-value" id="personal-dhikr">0</span>
+                    </div>
+                    <div class="metric-divider" aria-hidden="true"></div>
+                    <div class="metric">
+                        <span class="metric-label">Faol vaqt</span>
+                        <span class="metric-value metric-value-sm" id="personal-time">0 soniya</span>
+                    </div>
+                </div>
+                <p class="personal-share" id="personal-share-percent" hidden></p>
+            </section>
+
+            <section class="card card-community" aria-label="Birgalikdagi natija">
+                <h2 class="card-title">Birgalikdagi natija</h2>
+                <p class="community-line">
+                    <span id="footer-global-dhikr" class="community-number">0</span>
+                    <span class="community-unit"> istig‘for</span>
+                </p>
+                <p class="community-line community-time">
+                    Umumiy faol vaqt: <span id="footer-global-time">0 soniya</span>
+                </p>
+            </section>
+
+            <p class="gentle-note">Har safar qaytganingizda umumiy maqsadga yana bir qadam qo‘shiladi.</p>
+
+            <span id="global-remaining-time" hidden aria-hidden="true"></span>
+
+            <p id="status-msg" class="status-msg" hidden></p>
+        </div>
+    </div>
+
+    <script>
+        window.APP_CONFIG = {
+            debug: {{ "true" if debug else "false" }},
+            devTelegramId: {{ dev_telegram_id if dev_telegram_id is not none else "null" }}
+        };
+    </script>
+    <script src="/static/js/app-flow.js"></script>
+    <script src="/static/js/welcome.js"></script>
+    <script src="/static/js/profile.js"></script>
+    <script src="/static/js/tasbeh.js"></script>
+</body>
+</html>

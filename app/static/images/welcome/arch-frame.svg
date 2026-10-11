@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="280" viewBox="0 0 340 280" fill="none">
+  <defs>
+    <linearGradient id="archFill" x1="170" y1="10" x2="170" y2="270" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF9F0"/>
+      <stop offset="1" stop-color="#FBF6EC"/>
+    </linearGradient>
+    <pattern id="geo" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M12 1 L23 12 L12 23 L1 12 Z" stroke="#E8D2A2" stroke-width="0.6" fill="none" opacity="0.35"/>
+      <circle cx="12" cy="12" r="2.2" stroke="#E8D2A2" stroke-width="0.5" fill="none" opacity="0.25"/>
+    </pattern>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#6B5334" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <path d="M32 268V152C32 77 93 20 170 20C247 20 308 77 308 152V268" stroke="#E8D2A2" stroke-width="10" opacity="0.10"/>
+  <path d="M38 270V154 C38 102 67 59 112 38 C131 29 149 24 170 19 C191 24 209 29 228 38 C273 59 302 102 302 154V270Z" fill="url(#archFill)" stroke="#D0A95E" stroke-width="2.2" filter="url(#softShadow)"/>
+  <path d="M52 264V157 C52 111 78 73 118 54 C135 46 151 41 170 37 C189 41 205 46 222 54 C262 73 288 111 288 157V264Z" fill="url(#geo)" opacity="0.6"/>
+  <path d="M70 264V164 C70 124 92 91 126 75 C141 68 155 64 170 61 C185 64 199 68 214 75 C248 91 270 124 270 164V264Z" fill="none" stroke="#D0A95E" stroke-width="1.7" opacity="0.9"/>
+  <path d="M83 260V168 C83 133 102 104 132 90 C145 84 158 80 170 78 C182 80 195 84 208 90 C238 104 257 133 257 168V260" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.65"/>
+  <g transform="translate(170 28)">
+    <path d="M0 -6 L5 0 L0 6 L-5 0 Z" fill="#D0A95E" opacity="0.9"/>
+    <circle cx="0" cy="0" r="9" stroke="#E8D2A2" stroke-width="1" opacity="0.55"/>
+  </g>
+</svg>

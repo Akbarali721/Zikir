@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="88" viewBox="0 0 44 88" fill="none">
+  <defs>
+    <linearGradient id="metal2" x1="22" y1="8" x2="22" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8D2A2"/>
+      <stop offset="1" stop-color="#D0A95E"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(22 51) rotate(90) scale(24)">
+      <stop stop-color="#FFF3C9" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#FFF3C9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <path d="M22 0V14" stroke="#D0A95E" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="22" cy="2" r="2" fill="#D0A95E"/>
+  <ellipse cx="22" cy="52" rx="20" ry="24" fill="url(#glow2)"/>
+  <path d="M14 16H30L34 24H10L14 16Z" fill="url(#metal2)"/>
+  <path d="M10 24H34L31 66H13L10 24Z" fill="#FFF8E9" stroke="#D0A95E" stroke-width="1.6"/>
+  <path d="M15 28L18 62M29 28L26 62M22 28V62" stroke="#D0A95E" stroke-width="1"/>
+  <path d="M13 66H31L27 74H17L13 66Z" fill="url(#metal2)"/>
+  <path d="M19 74H25L22 82L19 74Z" fill="#D0A95E"/>
+  <circle cx="22" cy="45" r="6" fill="#FFE8A8" opacity="0.75"/>
+  <circle cx="22" cy="45" r="11" fill="#FFE8A8" opacity="0.18"/>
+</svg>

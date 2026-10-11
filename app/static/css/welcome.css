@@ -1,0 +1,401 @@
+/* Welcome — premium warm mihrab landing (rebuilt) */
+
+html.welcome-pending {
+    --w-page: #F6F0E5;
+    --w-card: #FBF7EF;
+    --w-parchment: #F8F2E8;
+    --w-green-deep: #123F35;
+    --w-emerald: #0F5A4D;
+    --w-green-mid: #246B5B;
+    --w-gold: #CFAE6A;
+    --w-gold-soft: #E7D4AA;
+    --w-muted: #66736E;
+    --w-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --w-sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html.welcome-pending,
+html.welcome-pending body {
+    background: var(--w-page);
+    font-family: var(--w-sans);
+    color: var(--w-green-deep);
+}
+
+html.welcome-pending .shell--tasbeh,
+html.welcome-pending .shell--profile {
+    display: none;
+}
+
+html:not(.welcome-pending) .shell--welcome {
+    display: none;
+}
+
+html.profile-pending .shell--tasbeh {
+    display: none;
+}
+
+/* —— Page backdrop —— */
+.shell--welcome {
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: calc(12px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));
+    background:
+        radial-gradient(ellipse 90% 55% at 50% 8%, rgba(231, 212, 170, 0.35) 0%, transparent 58%),
+        radial-gradient(ellipse 120% 80% at 50% 100%, rgba(18, 63, 53, 0.06) 0%, transparent 50%),
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 14px,
+            rgba(207, 174, 106, 0.035) 14px,
+            rgba(207, 174, 106, 0.035) 15px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 14px,
+            rgba(15, 90, 77, 0.025) 14px,
+            rgba(15, 90, 77, 0.025) 15px
+        ),
+        linear-gradient(180deg, #EDE4D4 0%, var(--w-page) 22%, #F6EFE2 78%, #E8DFD0 100%);
+}
+
+.shell--welcome.welcome-leaving {
+    animation: welcome-fade-out 0.32s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes welcome-fade-out {
+    to { opacity: 0; transform: translateY(10px); }
+}
+
+html:not(.welcome-pending) .shell--tasbeh {
+    animation: tasbeh-fade-in 0.4s ease;
+}
+
+@keyframes tasbeh-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .shell--welcome.welcome-leaving,
+    html:not(.welcome-pending) .shell--tasbeh {
+        animation: none;
+    }
+}
+
+/* —— Premium mobile card —— */
+.welcome {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 22px 20px 24px;
+    background: linear-gradient(165deg, var(--w-card) 0%, var(--w-parchment) 48%, #F3EBDE 100%);
+    border: 1px solid rgba(190, 150, 80, 0.18);
+    border-radius: 28px;
+    box-shadow:
+        0 22px 50px rgba(18, 63, 53, 0.12),
+        0 2px 0 rgba(255, 255, 255, 0.75) inset,
+        0 -1px 0 rgba(190, 150, 80, 0.08) inset;
+}
+
+.welcome-brand {
+    margin: 0 0 12px;
+    text-align: center;
+    font-family: var(--w-serif);
+    font-size: clamp(1.25rem, 4.2vw, 1.375rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--w-green-mid);
+}
+
+/* —— Hero (SVG assets) —— */
+.welcome-hero {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: clamp(280px, 78vw, 320px);
+    margin: 0 auto 28px;
+}
+
+.welcome-hero-arch {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center top;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.welcome-lantern {
+    position: absolute;
+    top: 6px;
+    width: clamp(36px, 10.5vw, 44px);
+    height: auto;
+    z-index: 3;
+    filter: drop-shadow(0 3px 6px rgba(207, 174, 106, 0.28));
+    pointer-events: none;
+}
+
+.welcome-lantern--left {
+    left: 8px;
+}
+
+.welcome-lantern--right {
+    right: 8px;
+}
+
+.welcome-hero-badge-wrap {
+    position: absolute;
+    left: 50%;
+    top: 56%;
+    transform: translate(-50%, -50%);
+    width: min(270px, 72vw);
+    max-width: 280px;
+    z-index: 2;
+}
+
+.welcome-hero-badge-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+}
+
+.welcome-hero-badge-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-46%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    padding: 0 12px;
+}
+
+.welcome-hero-goal {
+    display: block;
+    font-family: var(--w-serif);
+    font-size: clamp(2.625rem, 7.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: #FBF7EF;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+}
+
+.welcome-hero-tag {
+    display: block;
+    font-family: var(--w-sans);
+    font-size: clamp(0.75rem, 3.2vw, 0.875rem);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--w-gold-soft);
+}
+
+/* Fallback if decorative SVGs fail to load — text remains centered in hero */
+.welcome-hero-badge-wrap:not(:has(.welcome-hero-badge-img)) .welcome-hero-badge-text,
+.welcome-hero-badge-img[src=""] + .welcome-hero-badge-text {
+    position: relative;
+    transform: none;
+    top: auto;
+    margin: 0 auto;
+    padding: 24px 16px;
+    background: linear-gradient(165deg, var(--w-emerald), var(--w-green-deep));
+    border-radius: 20px;
+    border: 1px solid var(--w-gold);
+}
+
+/* —— Content rhythm —— */
+.welcome-inner {
+    text-align: center;
+}
+
+.welcome-headline {
+    margin: 0 0 14px;
+    font-family: var(--w-serif);
+    font-size: clamp(1.875rem, 7.8vw, 2.125rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--w-green-deep);
+}
+
+.welcome-headline-sub {
+    margin: 0 0 24px;
+    font-family: var(--w-serif);
+    font-size: clamp(1.3125rem, 5.2vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--w-green-deep);
+    max-width: 20rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.welcome-body {
+    margin: 0 0 24px;
+    font-family: var(--w-sans);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--w-muted);
+    max-width: 22rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.welcome-mission-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    max-width: 22rem;
+    margin: 0 auto 22px;
+    padding: 16px 16px 16px 14px;
+    text-align: left;
+    background: linear-gradient(135deg, #F2F8F4 0%, #FBF7EF 55%, #F5EFE4 100%);
+    border: 1px solid rgba(207, 174, 106, 0.42);
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(18, 63, 53, 0.07);
+}
+
+.welcome-mission-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 90, 77, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(207, 174, 106, 0.25);
+}
+
+.welcome-mission-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.welcome-mission-text {
+    margin: 0;
+    font-family: var(--w-sans);
+    font-size: clamp(0.9375rem, 3.8vw, 1rem);
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--w-green-deep);
+}
+
+.welcome-mission-em {
+    font-family: var(--w-sans);
+    font-weight: 700;
+    color: var(--w-emerald);
+}
+
+.welcome-closing {
+    max-width: 20rem;
+    margin: 0 auto 24px;
+}
+
+.welcome-closing-divider {
+    display: block;
+    width: 48px;
+    height: 2px;
+    margin: 0 auto 14px;
+    background: linear-gradient(90deg, transparent, var(--w-gold), transparent);
+    border-radius: 1px;
+    opacity: 0.85;
+}
+
+.welcome-motivation {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.welcome-motivation-muted {
+    font-family: var(--w-sans);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--w-muted);
+}
+
+.welcome-motivation-strong {
+    margin-top: 6px;
+    font-family: var(--w-serif);
+    font-size: clamp(1.3125rem, 5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--w-green-deep);
+}
+
+/* —— CTA —— */
+.welcome-footer {
+    padding-top: 28px;
+}
+
+.welcome-cta {
+    width: 100%;
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px 24px;
+    border: 1px solid var(--w-gold);
+    border-radius: 999px;
+    font-family: var(--w-sans);
+    font-size: clamp(1.125rem, 4.5vw, 1.25rem);
+    font-weight: 700;
+    color: #FBF7EF;
+    background: linear-gradient(180deg, var(--w-green-mid) 0%, var(--w-emerald) 50%, var(--w-green-deep) 100%);
+    box-shadow:
+        0 12px 32px rgba(18, 63, 53, 0.26),
+        inset 0 1px 0 rgba(231, 212, 170, 0.22);
+    cursor: pointer;
+    transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.welcome-cta:active {
+    transform: scale(0.985);
+    box-shadow: 0 8px 22px rgba(18, 63, 53, 0.22);
+}
+
+.welcome-cta:focus-visible {
+    outline: 2px solid var(--w-gold);
+    outline-offset: 3px;
+}
+
+.welcome-cta:disabled {
+    opacity: 0.72;
+    cursor: wait;
+}
+
+.welcome-cta-arrow {
+    display: flex;
+    width: 20px;
+    height: 20px;
+}
+
+@media (min-width: 480px) {
+    .shell--welcome {
+        align-items: center;
+        padding-top: max(20px, env(safe-area-inset-top));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+
+    .welcome {
+        min-height: auto;
+    }
+}
