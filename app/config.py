@@ -1,5 +1,7 @@
 from functools import lru_cache
 
+from typing import Literal
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -31,6 +33,15 @@ class Settings(BaseSettings):
     telegram_webhook_secret: str = ""
     # Bot webhook/polling faollashtirish (token bo‘lsa ham o‘chirish mumkin).
     telegram_bot_enabled: bool = True
+    # webhook = FastAPI /api/telegram/webhook; polling = alohida worker; off = bot ishga tushmaydi.
+    telegram_bot_mode: Literal["webhook", "polling", "off"] = "webhook"
+
+    @field_validator("telegram_bot_mode", mode="before")
+    @classmethod
+    def _normalize_bot_mode(cls, value: object) -> object:
+        if isinstance(value, str):
+            return value.strip().lower()
+        return value
     debug: bool = False
     dev_telegram_id: int | None = None
 

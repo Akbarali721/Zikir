@@ -4,8 +4,8 @@ import WelcomeHero from "@/components/welcome/WelcomeHero.vue";
 
 const router = useRouter();
 
-function goToProfile() {
-  router.push({ name: "profile" });
+function goToTasbeh() {
+  router.push({ name: "tasbeh" });
 }
 </script>
 
@@ -48,7 +48,7 @@ function goToProfile() {
     <button
       type="button"
       class="mt-8 min-h-[44px] w-full rounded-full border border-gold bg-gradient-to-b from-emerald-mid via-emerald to-forest px-6 py-4 font-sans text-lg font-bold text-ivory shadow-lg shadow-forest/25 transition-transform active:scale-[0.99] motion-reduce:transition-none"
-      @click="goToProfile"
+      @click="goToTasbeh"
     >
       Men ham qo‘shilaman
     </button>

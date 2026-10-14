@@ -60,14 +60,7 @@ async def test_integration_suite(integration_app):
         h_on = auth_headers(tid_onboard)
         me = await client.get("/api/me", headers=h_on)
         assert me.status_code == 200
-        if not me.json()["onboarding_completed"]:
-            prof = await client.post(
-                "/api/profile/onboarding",
-                headers=h_on,
-                json={"display_name": "Test Dev", "age": 25},
-            )
-            assert prof.status_code == 200
-        assert (await client.get("/api/me", headers=h_on)).json()["onboarding_completed"]
+        assert me.json()["onboarding_completed"] is True
 
         observer_id = 900_000_001
         obs_h = auth_headers(observer_id)

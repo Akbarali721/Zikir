@@ -3,7 +3,7 @@ import os
 import pytest
 
 from app.models.user import User
-from app.services.leaderboard_service import public_display_name
+from app.services.user_identity_service import preferred_display_name as public_display_name
 
 
 def test_public_display_name_prefers_display_name():

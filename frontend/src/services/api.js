@@ -65,10 +65,6 @@ export const api = {
     return apiRequest("/api/me");
   },
 
-  postProfileOnboarding(payload) {
-    return apiRequest("/api/profile/onboarding", { method: "POST", body: payload });
-  },
-
   postSessionStart(payload) {
     return apiRequest("/api/session/start", { method: "POST", body: payload });
   },

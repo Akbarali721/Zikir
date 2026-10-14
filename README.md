@@ -92,10 +92,19 @@ Kunlik statistika cheklovlari: [docs/DAILY_STATS.md](docs/DAILY_STATS.md)
 
 ## Railway
 
-Build: `cd frontend && npm ci && npm run build`  
-Release: `alembic upgrade head`  
-Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`  
+Repoda **`nixpacks.toml`** — build paytida avtomatik `frontend` → `npm ci` + `npm run build`.
+
+| Bosqich | Buyruq |
+|---------|--------|
+| Build | Nixpacks (`nixpacks.toml`) |
+| Release | `alembic upgrade head` |
+| Start | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+
+Batafsil: [docs/RAILWAY_VUE_DEPLOY.md](docs/RAILWAY_VUE_DEPLOY.md)
+
 `DEBUG=false`, `ADMIN_TELEGRAM_IDS` production adminlar uchun.
+
+Telegram bot: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBAPP_URL`, `TELEGRAM_WEBHOOK_BASE_URL` (public URL), ixtiyoriy `TELEGRAM_WEBHOOK_SECRET`. Batafsil: [docs/TELEGRAM_BOT.md](docs/TELEGRAM_BOT.md).
 
 ## Loyiha tuzilmasi
 

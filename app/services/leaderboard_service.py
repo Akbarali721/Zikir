@@ -8,6 +8,7 @@ from app.config import get_settings
 from app.models.daily_contribution import UserDailyContribution
 from app.models.user import User
 from app.services.daily_service import local_date_for_instant
+from app.services.user_identity_service import preferred_display_name as public_display_name
 
 
 @dataclass(frozen=True)
@@ -16,16 +17,6 @@ class LeaderboardEntry:
     display_label: str
     dhikr: int
     active_seconds: int
-
-
-def public_display_name(user: User) -> str:
-    if user.display_name and user.display_name.strip():
-        return user.display_name.strip()
-    if user.first_name and user.first_name.strip():
-        return user.first_name.strip()
-    if user.username:
-        return f"@{user.username}"
-    return "Ishtirokchi"
 
 
 async def get_top10_today(session: AsyncSession) -> list[LeaderboardEntry]:

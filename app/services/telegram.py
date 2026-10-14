@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings, get_settings
 from app.models.user import User
+from app.services.user_identity_service import sync_profile_from_telegram
 
 
 def validate_webapp_init_data(init_data: str, bot_token: str, max_age_seconds: int = 86400) -> dict:
@@ -85,6 +86,7 @@ async def get_or_create_user(session: AsyncSession, tg_user: dict) -> User:
         user.first_name = first_name
         user.last_name = last_name
 
+    sync_profile_from_telegram(user, tg_user)
     return user
 
 

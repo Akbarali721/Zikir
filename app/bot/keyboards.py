@@ -11,6 +11,19 @@ def webapp_url() -> str:
     return base if base.endswith("/") else f"{base}/"
 
 
+def zikr_webapp_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="📿 Zikr qilish",
+                    web_app=WebAppInfo(url=webapp_url()),
+                )
+            ],
+        ]
+    )
+
+
 def main_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -27,6 +40,10 @@ def main_menu_keyboard() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(text="📋 Reytingda ko‘rinish", callback_data="bot:optin"),
                 InlineKeyboardButton(text="🔒 Reytingdan chiqish", callback_data="bot:optout"),
+            ],
+            [
+                InlineKeyboardButton(text="🔔 Eslatmalarni yoqish", callback_data="bot:reminder_on"),
+                InlineKeyboardButton(text="🔕 Eslatmalarni o‘chirish", callback_data="bot:reminder_off"),
             ],
         ]
     )

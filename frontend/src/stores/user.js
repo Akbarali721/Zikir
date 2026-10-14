@@ -10,7 +10,6 @@ export const useUserStore = defineStore("user", () => {
   const error = ref(null);
   const authError = ref(null);
 
-  const onboardingCompleted = computed(() => Boolean(me.value?.onboarding_completed));
   const isAdmin = computed(() => Boolean(me.value?.is_admin));
 
   async function fetchMe() {
@@ -60,24 +59,6 @@ export const useUserStore = defineStore("user", () => {
     return me.value;
   }
 
-  async function submitOnboarding(displayName, age) {
-    const result = await api.postProfileOnboarding({
-      display_name: displayName,
-      age: Number(age),
-    });
-    if (me.value) {
-      me.value = {
-        ...me.value,
-        display_name: result.display_name,
-        age: result.age,
-        onboarding_completed: result.onboarding_completed,
-      };
-    } else {
-      await fetchMe();
-    }
-    return result;
-  }
-
   function resetBootstrap() {
     bootstrapped.value = false;
   }
@@ -88,11 +69,9 @@ export const useUserStore = defineStore("user", () => {
     bootstrapped,
     error,
     authError,
-    onboardingCompleted,
     isAdmin,
     fetchMe,
     bootstrap,
-    submitOnboarding,
     resetBootstrap,
   };
 });

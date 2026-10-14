@@ -1,6 +1,9 @@
+import logging
 from contextlib import asynccontextmanager
 
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -14,7 +17,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api import admin, profile, retention, stats, tasbeh, telegram_bot, web
 
-from app.bot.setup import configure_webhook, shutdown_bot
+from app.bot.setup import configure_webhook, should_register_webhook, shutdown_bot
 
 from app.config import get_settings
 
@@ -44,13 +47,15 @@ async def lifespan(app: FastAPI):
 
     settings = get_settings()
 
-    try:
+    if should_register_webhook(settings):
 
-        await configure_webhook(settings)
+        try:
 
-    except Exception:
+            await configure_webhook(settings)
 
-        pass
+        except Exception:
+
+            pass
 
     yield
 
@@ -89,10 +94,10 @@ def create_app() -> FastAPI:
 
 
     frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+    dist_index = frontend_dist / "index.html"
 
-
-
-    if frontend_dist.is_dir() and (frontend_dist / "index.html").is_file():
+    if frontend_dist.is_dir() and dist_index.is_file():
+        logger.info("Serving Vue SPA from %s", frontend_dist)
 
         assets_dir = frontend_dist / "assets"
 
@@ -146,7 +151,11 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=404, detail="Not found")
 
     else:
-
+        logger.warning(
+            "frontend/dist topilmadi (%s) — legacy Jinja UI. "
+            "Production: npm ci && npm run build in frontend/ (see nixpacks.toml).",
+            dist_index,
+        )
         app.include_router(web.router)
 
     return app

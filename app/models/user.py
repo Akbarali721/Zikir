@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date, datetime
 
-from sqlalchemy import BigInteger, Boolean, DateTime, Integer, String, func
+from sqlalchemy import BigInteger, Boolean, Date, DateTime, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -31,6 +31,12 @@ class User(Base):
     leaderboard_opt_in: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default="false", nullable=False
     )
+    telegram_chat_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True, index=True)
+    reminder_opt_in: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
+    reminder_last_morning_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    reminder_last_evening_date: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     sessions: Mapped[list["TasbehSession"]] = relationship(  # noqa: F821
         "TasbehSession", back_populates="user", lazy="select"

@@ -13,10 +13,8 @@ const phase = ref("loading");
 const message = ref("");
 
 async function routeAfterBootstrap() {
-  if (userStore.me && userStore.onboardingCompleted) {
+  if (userStore.me) {
     await router.replace({ name: "tasbeh" });
-  } else if (userStore.me) {
-    await router.replace({ name: "welcome" });
   } else if (userStore.authError) {
     phase.value = "error";
     message.value = userStore.authError;

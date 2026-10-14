@@ -18,8 +18,7 @@ const router = createRouter({
     },
     {
       path: "/profile",
-      name: "profile",
-      component: () => import("@/views/ProfileView.vue"),
+      redirect: { name: "tasbeh" },
     },
     {
       path: "/tasbeh",
@@ -66,14 +65,15 @@ router.beforeEach(async (to) => {
     return true;
   }
 
-  const completed = userStore.onboardingCompleted;
-
-  if (completed) {
-    if (to.name === "welcome" || to.name === "profile") {
+  if (userStore.me) {
+    if (to.name === "welcome") {
       return { name: "tasbeh" };
     }
-  } else if (to.name === "tasbeh") {
-    return { name: "welcome" };
+    return true;
+  }
+
+  if (to.name === "tasbeh" || to.name === "welcome") {
+    return { name: "entry" };
   }
 
   return true;

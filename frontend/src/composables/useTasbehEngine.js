@@ -1,4 +1,12 @@
 import { computed, onMounted, onUnmounted, ref, shallowRef } from "vue";
+import {
+  CHALLENGE_MILLION,
+  CHALLENGE_STORAGE_KEY,
+  CHALLENGE_TASBEH_33,
+  TASBEH_33_PROGRESS_KEY,
+  TASBEH_33_ROUND_SIZE,
+  phraseForTasbeh33Step,
+} from "@/constants/tasbehChallenge";
 import { api, buildAuthHeaders } from "@/services/api";
 import { useVisitStore } from "@/stores/visit";
 import { formatActiveTimeUz, formatGoalRemainingUz, formatNumber } from "@/utils/format";
@@ -17,8 +25,14 @@ export function useTasbehEngine() {
 
   const loading = ref(true);
   const error = ref("");
+  /** Bosish / surish (API `mode`). */
   const mode = ref("tap");
+  /** Million istig‘for yoki 33 tasbeh (API `challenge`). */
+  const challengeType = ref(CHALLENGE_MILLION);
   const sessionId = ref(null);
+
+  const tasbeh33RoundPosition = ref(0);
+  const tasbeh33CompletedRounds = ref(0);
 
   const pendingDhikr = ref(0);
   const pendingActiveSeconds = ref(0);
@@ -66,6 +80,21 @@ export function useTasbehEngine() {
   const personalDhikrFormatted = computed(() => formatNumber(displayPersonalDhikr.value));
   const personalTimeFormatted = computed(() => formatActiveTimeUz(displayPersonalSeconds.value));
 
+  const isMillionChallenge = computed(() => challengeType.value === CHALLENGE_MILLION);
+
+  const currentDhikrLabel = computed(() => {
+    if (challengeType.value === CHALLENGE_TASBEH_33) {
+      const nextStep = (tasbeh33RoundPosition.value % TASBEH_33_ROUND_SIZE) + 1;
+      return phraseForTasbeh33Step(nextStep);
+    }
+    return "Astaghfirulloh";
+  });
+
+  const tasbeh33ProgressLabel = computed(() => {
+    const inRound = tasbeh33RoundPosition.value;
+    return `${inRound} / ${TASBEH_33_ROUND_SIZE}`;
+  });
+
   function computeDisplayTodayDhikr() {
     if (!sessionCountsForToday.value) return todayBaseDhikr.value;
     return (
@@ -89,6 +118,73 @@ export function useTasbehEngine() {
     return tid ? `${PENDING_STORAGE}_${tid}` : null;
   }
 
+  function userStorageSuffix() {
+    const tid = mePayload.value?.user?.telegram_id;
+    return tid ? `_${tid}` : null;
+  }
+
+  function loadChallengePreference() {
+    const suffix = userStorageSuffix();
+    if (!suffix) return CHALLENGE_MILLION;
+    try {
+      const raw = localStorage.getItem(`${CHALLENGE_STORAGE_KEY}${suffix}`);
+      if (raw === CHALLENGE_TASBEH_33 || raw === CHALLENGE_MILLION) return raw;
+    } catch {
+      /* ignore */
+    }
+    return CHALLENGE_MILLION;
+  }
+
+  function saveChallengePreference() {
+    const suffix = userStorageSuffix();
+    if (!suffix) return;
+    try {
+      localStorage.setItem(`${CHALLENGE_STORAGE_KEY}${suffix}`, challengeType.value);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function loadTasbeh33Progress() {
+    const suffix = userStorageSuffix();
+    if (!suffix) return;
+    try {
+      const raw = localStorage.getItem(`${TASBEH_33_PROGRESS_KEY}${suffix}`);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      tasbeh33RoundPosition.value = Number(data.roundPosition) || 0;
+      tasbeh33CompletedRounds.value = Number(data.completedRounds) || 0;
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function saveTasbeh33Progress() {
+    const suffix = userStorageSuffix();
+    if (!suffix) return;
+    try {
+      localStorage.setItem(
+        `${TASBEH_33_PROGRESS_KEY}${suffix}`,
+        JSON.stringify({
+          roundPosition: tasbeh33RoundPosition.value,
+          completedRounds: tasbeh33CompletedRounds.value,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function advanceTasbeh33Round() {
+    let pos = tasbeh33RoundPosition.value + 1;
+    if (pos >= TASBEH_33_ROUND_SIZE) {
+      tasbeh33CompletedRounds.value += 1;
+      pos = 0;
+    }
+    tasbeh33RoundPosition.value = pos;
+    saveTasbeh33Progress();
+  }
+
   function savePendingLocal() {
     const key = pendingStorageKey();
     if (!key || !currentBatchId.value) return;
@@ -101,6 +197,7 @@ export function useTasbehEngine() {
       JSON.stringify({
         batchId: currentBatchId.value,
         sessionId: sessionId.value,
+        challengeType: challengeType.value,
         dhikr: pendingDhikr.value,
         seconds: pendingActiveSeconds.value,
       }),
@@ -114,7 +211,10 @@ export function useTasbehEngine() {
       const raw = sessionStorage.getItem(key);
       if (!raw) return;
       const data = JSON.parse(raw);
-      if (data.sessionId === sessionId.value) {
+      if (
+        data.sessionId === sessionId.value &&
+        (data.challengeType == null || data.challengeType === challengeType.value)
+      ) {
         currentBatchId.value = data.batchId;
         pendingDhikr.value += data.dhikr || 0;
         pendingActiveSeconds.value += data.seconds || 0;
@@ -193,7 +293,11 @@ export function useTasbehEngine() {
     ensureBatchId();
     pendingDhikr.value += 1;
     displaySessionDhikr.value += 1;
-    displayPersonalDhikr.value += 1;
+    if (isMillionChallenge.value) {
+      displayPersonalDhikr.value += 1;
+    } else {
+      advanceTasbeh33Round();
+    }
     savePendingLocal();
     maybeScheduleSync(true);
     triggerDhikrFx(fxPoint);
@@ -245,18 +349,22 @@ export function useTasbehEngine() {
       lastSyncAt = Date.now();
       displaySessionDhikr.value = data.session_dhikr_count;
       displaySessionActiveSeconds.value = data.session_active_seconds;
-      displayPersonalDhikr.value = data.personal_dhikr_count;
-      displayPersonalSeconds.value = data.personal_active_seconds;
+      if (isMillionChallenge.value) {
+        displayPersonalDhikr.value = data.personal_dhikr_count;
+        displayPersonalSeconds.value = data.personal_active_seconds;
+      }
       initialSessionDhikr.value = data.session_dhikr_count;
       initialSessionActiveSeconds.value = data.session_active_seconds;
-      if (sessionCountsForToday.value) {
+      if (sessionCountsForToday.value && isMillionChallenge.value) {
         todayBaseDhikr.value += sendDhikr;
         todayBaseSeconds.value += sendSeconds;
       }
       currentBatchId.value = newBatchId();
       savePendingLocal();
       error.value = "";
-      pollProgress(false).catch(() => {});
+      if (isMillionChallenge.value) {
+        pollProgress(false).catch(() => {});
+      }
     } catch (err) {
       pendingDhikr.value += sendDhikr;
       pendingActiveSeconds.value += sendSeconds;
@@ -282,6 +390,7 @@ export function useTasbehEngine() {
       if (me.session?.is_active) {
         sessionId.value = me.session.id;
         mode.value = me.session.mode;
+        challengeType.value = me.session.challenge_type || CHALLENGE_MILLION;
         displaySessionDhikr.value = me.session.dhikr_count;
         displaySessionActiveSeconds.value = me.session.active_seconds;
         initialSessionDhikr.value = me.session.dhikr_count;
@@ -305,10 +414,15 @@ export function useTasbehEngine() {
     }
   }
 
-  async function startSession(selectedMode) {
-    const data = await api.postSessionStart({ mode: selectedMode });
+  async function startSession(selectedMode, selectedChallenge) {
+    const data = await api.postSessionStart({
+      mode: selectedMode,
+      challenge: selectedChallenge,
+    });
     sessionId.value = data.session_id;
     mode.value = data.mode;
+    challengeType.value = data.challenge_type || selectedChallenge;
+    saveChallengePreference();
     displaySessionDhikr.value = 0;
     displaySessionActiveSeconds.value = 0;
     initialSessionDhikr.value = 0;
@@ -321,22 +435,36 @@ export function useTasbehEngine() {
     currentBatchId.value = newBatchId();
   }
 
-  async function ensureSession(selectedMode) {
+  async function ensureSession(selectedMode, selectedChallenge) {
     if (sessionId.value) {
-      if (mode.value !== selectedMode) {
+      if (mode.value !== selectedMode || challengeType.value !== selectedChallenge) {
         await flushSync(false);
         await api.postSessionStop();
-        await startSession(selectedMode);
+        await startSession(selectedMode, selectedChallenge);
       }
       return;
     }
-    await startSession(selectedMode);
+    await startSession(selectedMode, selectedChallenge);
   }
 
-  async function setMode(selectedMode) {
+  async function setInputMode(selectedMode) {
     mode.value = selectedMode;
     try {
-      await ensureSession(selectedMode);
+      await ensureSession(selectedMode, challengeType.value);
+    } catch (err) {
+      error.value = err.message || String(err);
+    }
+  }
+
+  async function setChallenge(selectedChallenge) {
+    if (challengeType.value === selectedChallenge) return;
+    challengeType.value = selectedChallenge;
+    saveChallengePreference();
+    if (selectedChallenge === CHALLENGE_TASBEH_33) {
+      loadTasbeh33Progress();
+    }
+    try {
+      await ensureSession(mode.value, selectedChallenge);
     } catch (err) {
       error.value = err.message || String(err);
     }
@@ -399,16 +527,27 @@ export function useTasbehEngine() {
     todayBaseSeconds.value = me.today.active_seconds;
     globalProgress.value = progress.global;
 
+    challengeType.value = loadChallengePreference();
+    if (challengeType.value === CHALLENGE_TASBEH_33) {
+      loadTasbeh33Progress();
+    }
+
     if (me.session?.is_active) {
       sessionId.value = me.session.id;
       mode.value = me.session.mode;
-      displaySessionDhikr.value = me.session.dhikr_count;
-      displaySessionActiveSeconds.value = me.session.active_seconds;
-      initialSessionDhikr.value = me.session.dhikr_count;
-      initialSessionActiveSeconds.value = me.session.active_seconds;
-      sessionCountsForToday.value = me.session.counts_for_today !== false;
+      const serverChallenge = me.session.challenge_type || CHALLENGE_MILLION;
+      if (serverChallenge !== challengeType.value) {
+        await ensureSession(mode.value, challengeType.value);
+      } else {
+        challengeType.value = serverChallenge;
+        displaySessionDhikr.value = me.session.dhikr_count;
+        displaySessionActiveSeconds.value = me.session.active_seconds;
+        initialSessionDhikr.value = me.session.dhikr_count;
+        initialSessionActiveSeconds.value = me.session.active_seconds;
+        sessionCountsForToday.value = me.session.counts_for_today !== false;
+      }
     } else {
-      await startSession("tap");
+      await startSession(mode.value || "tap", challengeType.value);
     }
     restorePendingLocal();
     if (pendingDhikr.value > 0 || pendingActiveSeconds.value > 0) {
@@ -434,8 +573,10 @@ export function useTasbehEngine() {
     activeSecondTimer = setInterval(() => {
       if (canCountActiveTime()) {
         pendingActiveSeconds.value += 1;
-        displayPersonalSeconds.value += 1;
         displaySessionActiveSeconds.value += 1;
+        if (isMillionChallenge.value) {
+          displayPersonalSeconds.value += 1;
+        }
         savePendingLocal();
       }
     }, 1000);
@@ -443,7 +584,7 @@ export function useTasbehEngine() {
     syncCheckTimer = setInterval(() => maybeScheduleSync(false), 1000);
 
     progressPollTimer = setInterval(() => {
-      if (!document.hidden) pollProgress(false);
+      if (!document.hidden && isMillionChallenge.value) pollProgress(false);
     }, 15000);
   }
 
@@ -473,6 +614,11 @@ export function useTasbehEngine() {
     loading,
     error,
     mode,
+    challengeType,
+    isMillionChallenge,
+    currentDhikrLabel,
+    tasbeh33ProgressLabel,
+    tasbeh33CompletedRounds,
     mePayload,
     globalProgress,
     sessionCountFormatted,
@@ -486,7 +632,10 @@ export function useTasbehEngine() {
     formatNumber,
     formatActiveTimeUz,
     formatGoalRemainingUz,
-    setMode,
+    setInputMode,
+    setChallenge,
+    CHALLENGE_MILLION,
+    CHALLENGE_TASBEH_33,
     onTap,
     onTouchStart,
     onTouchEnd,

@@ -6,6 +6,7 @@ import { useTasbehEngine } from "@/composables/useTasbehEngine";
 import { api } from "@/services/api";
 import { useUserStore } from "@/stores/user";
 import { useVisitStore } from "@/stores/visit";
+import { greetingName } from "@/utils/displayName";
 import { formatActiveTimeUz, formatGoalRemainingUz, formatNumber } from "@/utils/format";
 
 const userStore = useUserStore();
@@ -16,7 +17,7 @@ const engine = useTasbehEngine();
 
 const displayName = computed(() => {
   const me = engine.mePayload.value || userStore.me;
-  return me?.display_name || me?.user?.first_name || "do‘st";
+  return greetingName(me);
 });
 
 const global = computed(() => engine.globalProgress.value);
@@ -53,7 +54,7 @@ onMounted(() => {
       <p v-if="returnGrowth" class="mt-1 font-sans text-sm text-muted">
         Siz yo‘q paytingizda yana {{ formatNumber(returnGrowth) }} ta istig‘for qo‘shildi.
       </p>
-      <div v-if="global" class="mt-3 space-y-2 font-sans text-sm">
+      <div v-if="global && engine.isMillionChallenge.value" class="mt-3 space-y-2 font-sans text-sm">
         <div class="flex justify-between gap-2 text-forest">
           <span class="text-muted">Jami aytilgan zikr</span>
           <strong class="tabular-nums">{{ formatNumber(global.dhikr) }}</strong>
@@ -94,12 +95,42 @@ onMounted(() => {
     </p>
 
     <section class="mt-4 flex flex-1 flex-col items-center">
+      <div class="mb-3 flex w-full max-w-md flex-col gap-2">
+        <p class="text-center font-sans text-xs font-semibold uppercase tracking-wide text-muted">Rejim</p>
+        <div class="flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            class="min-h-[44px] rounded-full px-3 font-sans text-xs font-semibold transition-colors sm:px-4 sm:text-sm"
+            :class="
+              engine.challengeType.value === engine.CHALLENGE_MILLION
+                ? 'bg-emerald text-ivory'
+                : 'bg-ivory text-forest border border-gold/30'
+            "
+            @click="engine.setChallenge(engine.CHALLENGE_MILLION)"
+          >
+            1 million istig‘for
+          </button>
+          <button
+            type="button"
+            class="min-h-[44px] rounded-full px-3 font-sans text-xs font-semibold transition-colors sm:px-4 sm:text-sm"
+            :class="
+              engine.challengeType.value === engine.CHALLENGE_TASBEH_33
+                ? 'bg-emerald text-ivory'
+                : 'bg-ivory text-forest border border-gold/30'
+            "
+            @click="engine.setChallenge(engine.CHALLENGE_TASBEH_33)"
+          >
+            33 tasbeh
+          </button>
+        </div>
+      </div>
+
       <div class="mb-3 flex gap-2">
         <button
           type="button"
           class="min-h-[44px] rounded-full px-4 font-sans text-sm font-semibold transition-colors"
           :class="engine.mode.value === 'tap' ? 'bg-emerald text-ivory' : 'bg-ivory text-forest border border-gold/30'"
-          @click="engine.setMode('tap')"
+          @click="engine.setInputMode('tap')"
         >
           Bosish
         </button>
@@ -107,7 +138,7 @@ onMounted(() => {
           type="button"
           class="min-h-[44px] rounded-full px-4 font-sans text-sm font-semibold transition-colors"
           :class="engine.mode.value === 'swipe' ? 'bg-emerald text-ivory' : 'bg-ivory text-forest border border-gold/30'"
-          @click="engine.setMode('swipe')"
+          @click="engine.setInputMode('swipe')"
         >
           Surish
         </button>
@@ -141,7 +172,16 @@ onMounted(() => {
           >
             {{ engine.sessionCountFormatted.value }}
           </span>
-          <span class="relative z-10 mt-2 font-display text-lg text-forest/80">Astaghfirulloh</span>
+          <span class="relative z-10 mt-2 font-display text-lg text-forest/80">{{ engine.currentDhikrLabel.value }}</span>
+          <span
+            v-if="engine.challengeType.value === engine.CHALLENGE_TASBEH_33"
+            class="relative z-10 mt-1 font-sans text-xs text-muted"
+          >
+            Joriy aylanish: {{ engine.tasbeh33ProgressLabel.value }}
+            <span v-if="engine.tasbeh33CompletedRounds.value > 0">
+              · tugallangan: {{ engine.tasbeh33CompletedRounds.value }}
+            </span>
+          </span>
           <span class="relative z-10 mt-3 font-sans text-sm text-muted">
             {{ engine.mode.value === "swipe" ? "Pastdan tepaga suring" : "Bosish orqali zikr qiling" }}
           </span>
@@ -149,7 +189,7 @@ onMounted(() => {
       </div>
     </section>
 
-    <section class="mt-4 grid grid-cols-2 gap-2 font-sans text-sm">
+    <section v-if="engine.isMillionChallenge.value" class="mt-4 grid grid-cols-2 gap-2 font-sans text-sm">
       <div class="rounded-xl border border-gold/20 bg-ivory p-3">
         <p class="text-xs text-muted">Bugungi hissam</p>
         <p class="font-bold text-forest">{{ engine.todayDhikrFormatted.value }} zikr</p>
@@ -161,6 +201,12 @@ onMounted(() => {
         <p class="text-xs text-muted">{{ engine.personalTimeFormatted.value }}</p>
       </div>
     </section>
+    <p
+      v-else
+      class="mt-4 rounded-xl border border-gold/20 bg-ivory p-3 text-center font-sans text-xs text-muted"
+    >
+      33 tasbeh million istig‘for statistikasi va jamoaviy maqsadga qo‘shilmaydi.
+    </p>
 
     <p v-if="engine.loading.value" class="mt-4 text-center font-sans text-sm text-muted">Tayyorlanmoqda…</p>
   </main>

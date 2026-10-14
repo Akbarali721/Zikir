@@ -13,6 +13,7 @@ from app.schemas.user import (
 from app.services import tasbeh_service
 from app.services.progress_service import build_progress_response, ensure_global_progress
 from app.api.admin_deps import is_user_admin
+from app.services.user_identity_service import preferred_display_name, sync_profile_from_telegram
 from app.services.retention_service import (
     compute_global_growth_since_last_visit,
     get_current_global_dhikr,
@@ -35,6 +36,8 @@ async def client_config() -> dict[str, bool]:
 @router.get("/me", response_model=UserMeResponse)
 async def get_me(db: DbSession, user: CurrentUser) -> UserMeResponse:
     settings = get_settings()
+    sync_profile_from_telegram(user, None)
+    await db.flush()
     session = await tasbeh_service.get_active_session(db, user.id)
     session_brief = None
     if session:
@@ -67,7 +70,7 @@ async def get_me(db: DbSession, user: CurrentUser) -> UserMeResponse:
         ),
         personal_dhikr_count=user.personal_dhikr_count,
         personal_active_seconds=user.personal_active_seconds,
-        display_name=user.display_name,
+        display_name=preferred_display_name(user),
         age=user.age,
         onboarding_completed=user.onboarding_completed,
         is_admin=is_user_admin(user),
