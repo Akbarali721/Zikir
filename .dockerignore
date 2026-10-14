@@ -1,0 +1,49 @@
+# Git va IDE
+.git
+.gitignore
+.idea
+.vscode
+
+# Maxfiy va mahalliy
+.env
+.env.*
+!.env.example
+.local
+*.pem
+*.key
+
+# Python mahalliy
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+*.egg-info
+.mypy_cache
+.ruff_cache
+
+# Node (image ichida npm ci qilinadi)
+node_modules
+frontend/node_modules
+
+# Build artefaktlar (multi-stage frontend build qiladi)
+frontend/dist
+dist
+build
+
+# Test / hujjat (runtime kerak emas)
+tests
+docs
+scripts
+*.md
+!README.md
+
+# Docker konteksti (Dockerfile o‘zi kerak — ignore qilinmaydi)
+.dockerignore
+
+# Backup va log
+*.log
+logs
+*.sql
+*.dump
+*.bak

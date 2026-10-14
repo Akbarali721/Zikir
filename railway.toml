@@ -1,11 +1,11 @@
-# Railway servis sozlamalari (Dashboard bilan birga ishlaydi)
+# Railway — Dockerfile orqali Vue + FastAPI
 # https://docs.railway.com/guides/config-as-code
 
 [build]
-builder = "NIXPACKS"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-# Release bosqichi (Migratsiya) — Railway UI da ham qo‘yish mumkin:
-# alembic upgrade head
+# Migratsiya: faqat Release Command (masalan alembic upgrade head), start da emas
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
