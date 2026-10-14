@@ -15,6 +15,7 @@ class SessionBrief(BaseModel):
 
     id: int
     mode: str
+    challenge_type: str = "million_istighfor"
     dhikr_count: int
     active_seconds: int
     is_active: bool
@@ -43,6 +44,7 @@ class UserMeResponse(BaseModel):
     age: int | None = None
     onboarding_completed: bool = False
     is_admin: bool = False
+    leaderboard_opt_in: bool = False
     today: TodayContribution
     retention: RetentionInfo
     session: SessionBrief | None = None

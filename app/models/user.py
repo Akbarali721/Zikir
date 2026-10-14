@@ -28,6 +28,9 @@ class User(Base):
     last_visit_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     global_dhikr_at_last_visit: Mapped[int | None] = mapped_column(Integer, nullable=True)
     last_dhikr_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    leaderboard_opt_in: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
 
     sessions: Mapped[list["TasbehSession"]] = relationship(  # noqa: F821
         "TasbehSession", back_populates="user", lazy="select"

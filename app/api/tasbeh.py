@@ -23,13 +23,16 @@ async def session_start(
     user: CurrentUser,
 ) -> SessionStartResponse:
     try:
-        tasbeh = await tasbeh_service.start_session(db, user, body.mode)
+        tasbeh = await tasbeh_service.start_session(
+            db, user, body.mode, challenge_type=body.challenge
+        )
     except Exception as exc:
         raise HTTPException(status_code=500, detail="Failed to start session") from exc
 
     return SessionStartResponse(
         session_id=tasbeh.id,
         mode=tasbeh.mode,
+        challenge_type=getattr(tasbeh, "challenge_type", "million_istighfor"),
         started_at=tasbeh.started_at,
     )
 

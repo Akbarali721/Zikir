@@ -60,11 +60,18 @@ def _build_sync_response(tasbeh: TasbehSession, user: User) -> dict:
     }
 
 
-async def start_session(session: AsyncSession, user: User, mode: str) -> TasbehSession:
+def _session_matches(existing: TasbehSession, mode: str, challenge_type: str) -> bool:
+    existing_challenge = getattr(existing, "challenge_type", None) or "million_istighfor"
+    return existing.mode == mode and existing_challenge == challenge_type
+
+
+async def start_session(
+    session: AsyncSession, user: User, mode: str, *, challenge_type: str = "million_istighfor"
+) -> TasbehSession:
     now = _utcnow()
     existing = await get_active_session(session, user.id, for_update=True)
     if existing is not None:
-        if existing.mode == mode:
+        if _session_matches(existing, mode, challenge_type):
             existing.last_activity_at = now
             user.last_active_at = now
             await session.flush()
@@ -78,6 +85,7 @@ async def start_session(session: AsyncSession, user: User, mode: str) -> TasbehS
     tasbeh = TasbehSession(
         user_id=user.id,
         mode=mode,
+        challenge_type=challenge_type,
         is_active=True,
         started_at=now,
         last_activity_at=now,
@@ -95,10 +103,16 @@ async def start_session(session: AsyncSession, user: User, mode: str) -> TasbehS
                     "code": "active_session_exists",
                     "session_id": active.id,
                     "mode": active.mode,
+                    "challenge_type": getattr(active, "challenge_type", "million_istighfor"),
                 },
             ) from exc
         raise HTTPException(status_code=500, detail="Failed to start session") from exc
     return tasbeh
+
+
+def _counts_toward_million_challenge(tasbeh: TasbehSession) -> bool:
+    challenge = getattr(tasbeh, "challenge_type", None) or "million_istighfor"
+    return challenge == "million_istighfor"
 
 
 async def stop_session(session: AsyncSession, user: User) -> TasbehSession:
@@ -199,31 +213,40 @@ async def sync_tasbeh(
         )
     )
 
-    await session.execute(
-        update(User)
-        .where(User.id == user.id)
-        .values(
-            personal_dhikr_count=User.personal_dhikr_count + dhikr_delta,
-            personal_active_seconds=User.personal_active_seconds + active_seconds_delta,
-            last_active_at=now,
+    counts_million = _counts_toward_million_challenge(tasbeh)
+
+    if counts_million:
+        await session.execute(
+            update(User)
+            .where(User.id == user.id)
+            .values(
+                personal_dhikr_count=User.personal_dhikr_count + dhikr_delta,
+                personal_active_seconds=User.personal_active_seconds + active_seconds_delta,
+                last_active_at=now,
+            )
         )
-    )
 
-    await session.execute(
-        update(GlobalProgress)
-        .where(GlobalProgress.id == global_row.id)
-        .values(
-            total_dhikr_count=GlobalProgress.total_dhikr_count + dhikr_delta,
-            total_active_seconds=GlobalProgress.total_active_seconds + active_seconds_delta,
+        await session.execute(
+            update(GlobalProgress)
+            .where(GlobalProgress.id == global_row.id)
+            .values(
+                total_dhikr_count=GlobalProgress.total_dhikr_count + dhikr_delta,
+                total_active_seconds=GlobalProgress.total_active_seconds + active_seconds_delta,
+            )
         )
-    )
 
-    await apply_daily_contribution(
-        session, user.id, dhikr_delta, active_seconds_delta, at=now
-    )
+        await apply_daily_contribution(
+            session, user.id, dhikr_delta, active_seconds_delta, at=now
+        )
 
-    if dhikr_delta > 0:
-        await mark_first_dhikr(session, user, visit)
+        if dhikr_delta > 0:
+            await mark_first_dhikr(session, user, visit)
+    else:
+        await session.execute(
+            update(User)
+            .where(User.id == user.id)
+            .values(last_active_at=now)
+        )
 
     await session.flush()
 

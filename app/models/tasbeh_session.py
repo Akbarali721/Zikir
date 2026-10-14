@@ -17,6 +17,9 @@ class TasbehSession(Base):
     dhikr_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     active_seconds: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     mode: Mapped[str] = mapped_column(String(16), nullable=False)
+    challenge_type: Mapped[str] = mapped_column(
+        String(24), default="million_istighfor", server_default="million_istighfor", nullable=False
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true", nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 

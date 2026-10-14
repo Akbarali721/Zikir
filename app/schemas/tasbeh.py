@@ -5,13 +5,19 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 
+ChallengeType = Literal["million_istighfor", "tasbeh_33"]
+InputMode = Literal["tap", "swipe"]
+
+
 class SessionStartRequest(BaseModel):
-    mode: Literal["tap", "swipe"]
+    mode: InputMode
+    challenge: ChallengeType = "million_istighfor"
 
 
 class SessionStartResponse(BaseModel):
     session_id: int
     mode: str
+    challenge_type: str
     started_at: datetime
 
 

@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException
 
 from app.api.deps import CurrentUser, DbSession
-from app.schemas.profile import OnboardingProfileRequest, OnboardingProfileResponse
+from app.schemas.profile import (
+    LeaderboardOptInRequest,
+    LeaderboardOptInResponse,
+    OnboardingProfileRequest,
+    OnboardingProfileResponse,
+)
 from app.services.profile_service import complete_onboarding
 
 router = APIRouter(prefix="/api/profile", tags=["profile"])
@@ -24,3 +29,14 @@ async def profile_onboarding(
         age=user.age,
         onboarding_completed=user.onboarding_completed,
     )
+
+
+@router.post("/leaderboard-opt-in", response_model=LeaderboardOptInResponse)
+async def profile_leaderboard_opt_in(
+    body: LeaderboardOptInRequest,
+    db: DbSession,
+    user: CurrentUser,
+) -> LeaderboardOptInResponse:
+    user.leaderboard_opt_in = body.opt_in
+    await db.flush()
+    return LeaderboardOptInResponse(leaderboard_opt_in=user.leaderboard_opt_in)

@@ -12,7 +12,9 @@ from fastapi.staticfiles import StaticFiles
 
 
 
-from app.api import admin, profile, retention, stats, tasbeh, web
+from app.api import admin, profile, retention, stats, tasbeh, telegram_bot, web
+
+from app.bot.setup import configure_webhook, shutdown_bot
 
 from app.config import get_settings
 
@@ -40,7 +42,19 @@ async def lifespan(app: FastAPI):
 
             await session.rollback()
 
+    settings = get_settings()
+
+    try:
+
+        await configure_webhook(settings)
+
+    except Exception:
+
+        pass
+
     yield
+
+    await shutdown_bot()
 
 
 
@@ -69,6 +83,8 @@ def create_app() -> FastAPI:
     app.include_router(retention.router)
 
     app.include_router(admin.router)
+
+    app.include_router(telegram_bot.router)
 
 
 

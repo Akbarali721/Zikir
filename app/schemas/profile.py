@@ -20,3 +20,11 @@ class OnboardingProfileResponse(BaseModel):
     display_name: str
     age: int
     onboarding_completed: bool
+
+
+class LeaderboardOptInRequest(BaseModel):
+    opt_in: bool
+
+
+class LeaderboardOptInResponse(BaseModel):
+    leaderboard_opt_in: bool

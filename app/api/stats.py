@@ -38,14 +38,20 @@ async def get_me(db: DbSession, user: CurrentUser) -> UserMeResponse:
     session = await tasbeh_service.get_active_session(db, user.id)
     session_brief = None
     if session:
+        challenge_type = getattr(session, "challenge_type", "million_istighfor")
+        counts_today = (
+            challenge_type == "million_istighfor"
+            and session_started_on_display_today(session.started_at, settings.display_timezone)
+        )
         session_brief = SessionBrief(
             id=session.id,
             mode=session.mode,
+            challenge_type=challenge_type,
             dhikr_count=session.dhikr_count,
             active_seconds=session.active_seconds,
             is_active=session.is_active,
             started_at=session.started_at,
-            counts_for_today=session_started_on_display_today(session.started_at, settings.display_timezone),
+            counts_for_today=counts_today,
         )
 
     today_dhikr, today_seconds = await get_today_totals(db, user.id)
@@ -65,6 +71,7 @@ async def get_me(db: DbSession, user: CurrentUser) -> UserMeResponse:
         age=user.age,
         onboarding_completed=user.onboarding_completed,
         is_admin=is_user_admin(user),
+        leaderboard_opt_in=bool(getattr(user, "leaderboard_opt_in", False)),
         today=TodayContribution(dhikr=today_dhikr, active_seconds=today_seconds),
         retention=RetentionInfo(
             is_returning=user.last_visit_at is not None,
