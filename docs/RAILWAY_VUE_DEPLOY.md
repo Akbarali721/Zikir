@@ -15,7 +15,9 @@ npm ci --prefix frontend
 npm run build --prefix frontend
 ```
 
-Repoda: `nixpacks.toml` (Nixpacks avtomatik qo‘llaydi).
+**Asosiy usul:** repodagi **`Dockerfile`** (multi-stage) + `railway.toml` → `builder = "DOCKERFILE"`.
+
+Alternativa: `nixpacks.toml` (Nixpacks); Dockerfile tanlangan bo‘lsa Nixpacks ishlatilmaydi.
 
 ## Railway Dashboard
 
@@ -42,10 +44,17 @@ Repoda: `nixpacks.toml` (Nixpacks avtomatik qo‘llaydi).
 
 ## Mahalliy (production kabi)
 
+**Docker (Railway bilan bir xil image):**
+
 ```powershell
-cd frontend
-npm ci
-npm run build
-cd ..
+cd D:\proekt\tasbeh
+docker build -t million-istigfor .
+docker run --rm -p 8000:8000 -e PORT=8000 -e DATABASE_URL=... million-istigfor
+```
+
+**Yoki dist + uvicorn:**
+
+```powershell
+cd frontend && npm ci && npm run build && cd ..
 uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```

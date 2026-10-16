@@ -92,13 +92,13 @@ Kunlik statistika cheklovlari: [docs/DAILY_STATS.md](docs/DAILY_STATS.md)
 
 ## Railway
 
-Repoda **`nixpacks.toml`** — build paytida avtomatik `frontend` → `npm ci` + `npm run build`.
+Production image: **`Dockerfile`** (Node 20 Vue build + Python 3.12 FastAPI). Railway: `railway.toml` → `builder = "DOCKERFILE"`.
 
 | Bosqich | Buyruq |
 |---------|--------|
-| Build | Nixpacks (`nixpacks.toml`) |
-| Release | `alembic upgrade head` |
-| Start | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Build | Dockerfile multi-stage |
+| Release | `alembic upgrade head` (Release Command — start ichida emas) |
+| Start | Image CMD: `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
 
 Batafsil: [docs/RAILWAY_VUE_DEPLOY.md](docs/RAILWAY_VUE_DEPLOY.md)
 
